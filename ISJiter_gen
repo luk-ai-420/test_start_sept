@@ -1,0 +1,4760 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "# Iterables and Iterators"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "**Iteration** is a general term for taking each item of something, one after another\n",
+    "\n",
+    "Any time you use **a loop**, explicit or implicit, to go over a group of items, that is iteration"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Implicit loops?\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "* operator in\n",
+    "* reduction: sum(), min(), max()\n",
+    "* constructors: list(), tuple(), set(), dict(), frozenset()\n",
+    "* other built-in functions: all(), any(), sorted(), zip(), enumerate()\n",
+    "* FP style functions - see below: map(), filter(), functtools.reduce()...\n",
+    "* ..."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "* http://stackoverflow.com/questions/9884132/what-exactly-are-pythons-iterator-iterable-and-iteration-protocols\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "* https://docs.python.org/3/tutorial/classes.html#iterators\n",
+    "* https://docs.python.org/dev/library/stdtypes.html#iterator-types\n",
+    "* https://docs.python.org/dev/howto/functional.html#iterators"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "In Python, iterable and iterator have specific meanings"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterable** is an object that has an `__iter__` method which returns an iterator, or which defines a `__getitem__` method that can take sequential indexes starting from zero (and raises an IndexError when the indexes are no longer valid)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "So an iterable is an object that you can get an iterator from"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterator** is an object with a `__next__` (Python 3) or `next` (Python 2) method"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Whenever you use a for loop, or map, or a list comprehension, etc. in Python, the next method is called automatically to get each item from the iterator, thus going through the process of iteration"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "### Iteration protocol\n",
+    "\n",
+    "    for x in obj:\n",
+    "        # statements\n",
+    "        \n",
+    "    # actually means:\n",
+    "\n",
+    "    _iter = iter(obj) # Get an iterator object\n",
+    "    while True:\n",
+    "        try:\n",
+    "            x = next(_iter)  # Get next item\n",
+    "        except StopIteration: # No more items\n",
+    "            break\n",
+    "        # statements\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "In other words:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterable** is:\n",
+    "\n",
+    "* anything that can be looped over (i.e. you can loop over a string or file)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterable** is:\n",
+    "\n",
+    "* anything that can appear on the right-side of a for-loop: for x in iterable: ..."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterable** is:\n",
+    "\n",
+    "* anything you can call with `iter()` that will return an ITERATOR: `iter(obj)`\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterable** is:\n",
+    "\n",
+    "* an object that defines `__iter__` that returns a fresh ITERATOR, or it may have a `__getitem__` method suitable for indexed lookup\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterator** is:\n",
+    "* an object **with state** that remembers where it is during iteration"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterator** is:\n",
+    "* an object with a `__next__` method that:\n",
+    "  * returns the next value in the iteration\n",
+    "  * updates the state to point at the next value\n",
+    "  * signals when it is done by raising StopIteration\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An **iterator** is:\n",
+    "* an object that is self-iterable (meaning that it has an `__iter__` method that returns self)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Note:\n",
+    "* The builtin function next() calls that method on the object passed to it\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'c'"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = 'cat'          # s is an ITERABLE\n",
+    "                   # s is a str object that is immutable\n",
+    "                   # s has no state\n",
+    "                   # s has a __getitem__() method \n",
+    "\n",
+    "t = iter(s)        # t is an ITERATOR\n",
+    "                   # t has state (it starts by pointing at the \"c\"\n",
+    "                   # t has a next() method and an __iter__() method\n",
+    "\n",
+    "next(t)            # next() returns the next value and advances the state"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'a'"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(t)            # next() returns the next value and advances"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'t'"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(t)            # next() returns the next value and advances"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-5-e23f9f015455>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mt\u001b[0m\u001b[1;33m)\u001b[0m            \u001b[1;31m# next() raises StopIteration to signal that iteration is complete\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "next(t)            # next() raises StopIteration to signal that iteration is complete"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "iter(t) is t   # the iterator is self-iterable"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "class Fib:\n",
+    "    '''iterator that yields numbers in the Fibonacci sequence'''\n",
+    "\n",
+    "    def __init__(self, max):\n",
+    "        self.max = max\n",
+    "        self.a = 0\n",
+    "        self.b = 1\n",
+    "\n",
+    "    def __iter__(self):\n",
+    "        return self\n",
+    "\n",
+    "    def __next__(self):\n",
+    "        fib = self.a\n",
+    "        if fib > self.max:\n",
+    "            raise StopIteration\n",
+    "        self.a, self.b = self.b, self.a + self.b\n",
+    "        return fib"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "metadata": {
+    "scrolled": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<__main__.Fib object at 0x0000017BC08CED68>\n",
+      "<__main__.Fib object at 0x0000017BC08CED68>\n"
+     ]
+    }
+   ],
+   "source": [
+    "fib2 = Fib(100)\n",
+    "fib2\n",
+    "next(fib2)\n",
+    "next(fib2)\n",
+    "next(fib2)\n",
+    "next(fib2)\n",
+    "print(fib2)\n",
+    "fib3 = iter(fib2)\n",
+    "print(fib3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Iterators allow users to access each element in an abstract collection without actually creating a sequence variable with all elements in memory at once"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "list(fib2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "True True\n"
+     ]
+    }
+   ],
+   "source": [
+    "f = open('cisg57931.csv')\n",
+    "print('__iter__' in dir(f), '__next__' in dir(f))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "';JmĂŠno;Login;Body;Celk;Datum;Kdo;\\n'"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "line0 = next(f)\n",
+    "line1 = next(f)\n",
+    "line0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# Helper function:\n",
+    "def is_leap_year(year):\n",
+    "    if year % 400 == 0:\n",
+    "        return True\n",
+    "    elif year % 100 == 0:\n",
+    "        return False\n",
+    "    elif year % 4 == 0:\n",
+    "        return True"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "class LeapYearIterator(object):\n",
+    "    def __init__(self, year, max_year=2020):\n",
+    "        assert year < max_year\n",
+    "        self.year = year\n",
+    "        self.max_year = max_year\n",
+    "   \n",
+    "    # Return the next leap year. Notice it's infinite:\n",
+    "    def __next__(self):\n",
+    "        while True:\n",
+    "            self.year += 1\n",
+    "            if is_leap_year(self.year):\n",
+    "                return self.year\n",
+    "            if self.year > self.max_year:\n",
+    "                raise StopIteration()\n",
+    "    \n",
+    "    # To make ``LeapYearIterator`` iterable, we also define an __iter__\n",
+    "    # method. `LeapYearIterator`` objects are already iterators,\n",
+    "    # ``iter`` can just return the object itself.\n",
+    "    def __iter__(self):\n",
+    "        return self"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Year 2004 is a leap year.\n",
+    "2004 in LeapYearIterator(1890)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "False"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Year 1900 is not a leap year.\n",
+    "1900 in LeapYearIterator(1890)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1972\n",
+      "1976\n",
+      "1980\n",
+      "1984\n",
+      "1988\n",
+      "1992\n",
+      "1996\n",
+      "2000\n",
+      "2004\n",
+      "2008\n",
+      "2012\n",
+      "2016\n",
+      "2020\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Because __iter__ is defined, you can use LeapYearIterator\n",
+    "# in a for loop.\n",
+    "for leap_year in LeapYearIterator(1970):\n",
+    "    print(leap_year)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[1972, 1976, 1980, 1984, 1988, 1992, 1996, 2000, 2004, 2008, 2012, 2016, 2020]"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Or you can generate a list of all leap years:\n",
+    "leap_years = list(LeapYearIterator(1970))\n",
+    "leap_years"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "class LeapYearIterator(object):\n",
+    "    def __init__(self, year):\n",
+    "        self.year = year\n",
+    "   \n",
+    "    # Return the next leap year. Notice it's infinite:\n",
+    "    def __next__(self):\n",
+    "        while True:\n",
+    "            self.year += 1\n",
+    "            return self.year\n",
+    "               \n",
+    "    # To make ``LeapYearIterator`` iterable, we also define an __iter__\n",
+    "    # method. `LeapYearIterator`` objects are already iterators,\n",
+    "    # ``iter`` can just return the object itself.\n",
+    "    def __iter__(self):\n",
+    "        return self"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Generator Functions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Generators functions allow you to declare a function that behaves like an iterator\n",
+    "\n",
+    "A generator \"generates\" values"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "A generator function is defined like a normal function, but whenever it needs to generate a value, it does so with the **yield** keyword rather than return"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "If the body of a def contains yield, the function automatically becomes a generator function (even if it also contains a return statement). There's nothing else we need to do to create one.\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Generator functions create generator iterators\n",
+    "\n",
+    "That's the last time you'll see the term generator iterator, though, since they're almost always referred to as \"generators\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Just remember that a generator is a special type of iterator\n",
+    "\n",
+    "To get the next value from a generator, we use the same built-in function as for iterators: next()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Whenever next() is called on a generator, the generator function runs its code until it reaches a yield\n",
+    "\n",
+    "It passes back a value to whomever called next()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def gen_squares_and_cubes(start,stop):\n",
+    "    print('generation begins')\n",
+    "    for num in range(start,stop):\n",
+    "        print('generating square:')\n",
+    "        yield num**2\n",
+    "        print('generating cube:')\n",
+    "        yield num**3\n",
+    "    print('generation ends')\n",
+    "\n",
+    "my_squares_and_cubes = gen_squares_and_cubes(2,4)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'generator' object is not subscriptable",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-24-860664c23243>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mmy_squares_and_cubes\u001b[0m\u001b[1;33m[\u001b[0m\u001b[1;36m0\u001b[0m\u001b[1;33m]\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: 'generator' object is not subscriptable"
+     ]
+    }
+   ],
+   "source": [
+    "my_squares_and_cubes[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "function"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(gen_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "generator"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['__class__',\n",
+       " '__del__',\n",
+       " '__delattr__',\n",
+       " '__dir__',\n",
+       " '__doc__',\n",
+       " '__eq__',\n",
+       " '__format__',\n",
+       " '__ge__',\n",
+       " '__getattribute__',\n",
+       " '__gt__',\n",
+       " '__hash__',\n",
+       " '__init__',\n",
+       " '__iter__',\n",
+       " '__le__',\n",
+       " '__lt__',\n",
+       " '__name__',\n",
+       " '__ne__',\n",
+       " '__new__',\n",
+       " '__next__',\n",
+       " '__qualname__',\n",
+       " '__reduce__',\n",
+       " '__reduce_ex__',\n",
+       " '__repr__',\n",
+       " '__setattr__',\n",
+       " '__sizeof__',\n",
+       " '__str__',\n",
+       " '__subclasshook__',\n",
+       " 'close',\n",
+       " 'gi_code',\n",
+       " 'gi_frame',\n",
+       " 'gi_running',\n",
+       " 'gi_yieldfrom',\n",
+       " 'send',\n",
+       " 'throw']"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dir(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "generation begins\n",
+      "generating square:\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "4"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "generating cube:\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "8"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "generating square:\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "9"
+      ]
+     },
+     "execution_count": 30,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "generating cube:\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "27"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "generation ends\n"
+     ]
+    },
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-32-bb09496785fe>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mmy_squares_and_cubes\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-33-bb09496785fe>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mmy_squares_and_cubes\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "next(my_squares_and_cubes)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def weekdays():\n",
+    "    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n",
+    "    while True:\n",
+    "        for day in days:\n",
+    "            yield day\n",
+    "\n",
+    "w = weekdays()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# infinitelist = list(w)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "month_lengths =  [('January', 31),\n",
+    "                  ('February', 28),   # not a leap year\n",
+    "                  ('March', 31),\n",
+    "                  ('April', 30),\n",
+    "                  ('May', 31),\n",
+    "                  ('June', 30),\n",
+    "                  ('July', 31),\n",
+    "                  ('August', 31),\n",
+    "                  ('September', 30),\n",
+    "                  ('October', 31),\n",
+    "                  ('November', 30),\n",
+    "                  ('December', 31)]\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# 2018 starts with Monday\n",
+    "def days_of_2018():\n",
+    "    for (month, length) in month_lengths:\n",
+    "        for day in range(1, length+1):\n",
+    "            yield day, month"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Monday 1 January\n",
+      "Thursday 1 February\n",
+      "Thursday 1 March\n",
+      "Sunday 1 April\n",
+      "Tuesday 1 May\n",
+      "Friday 1 June\n",
+      "Sunday 1 July\n",
+      "Wednesday 1 August\n",
+      "Saturday 1 September\n",
+      "Monday 1 October\n",
+      "Thursday 1 November\n",
+      "Saturday 1 December\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Print the first day of each month:\n",
+    "for (weekday, (day, month)) in zip(weekdays(), days_of_2018()):\n",
+    "    if day == 1:\n",
+    "        print(weekday, day, month)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "One benefit of iterators (and generators) is that they can be used \"lazily\", with memory and speed advantages over creating big lists in memory"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Example: a common generator function is **os.walk** in the standard library"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# Find all folders containing jpg images, recursively:\n",
+    "import os\n",
+    "for (basedir, subdirs, files) in os.walk('C:/'):\n",
+    "    if any((f.endswith('.jpg')) for f in files):\n",
+    "        print(basedir)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Traversing all directories may take hours on a huge filesystem. But because os.walk returns a generator, it produces results lazily: there is no need to traverse all subfolders before the first result is returned."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "*Note*: this is similar to streams in Unix. Quiz: how long does it take to give you the first page of results from:\n",
+    "```\n",
+    "find /usr | less\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Example: simulations"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Here is a Monte Carlo estimator for the value of $\\pi$ (3.14159...) written as a generator function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import random\n",
+    "\n",
+    "def estimate_pi_gen():\n",
+    "    k = 0; n = 0\n",
+    "    while True:\n",
+    "        x = random.random()\n",
+    "        y = random.random()\n",
+    "        if x**2 + y**2 < 1:\n",
+    "            k += 1\n",
+    "        n += 1\n",
+    "        yield k / n * 4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pi = estimate_pi_gen()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "generator"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(pi)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "3.6923076923076925"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(pi)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# Generate 100 consecutive estimates from the 10000th:\n",
+    "import itertools\n",
+    "estimates = list(itertools.islice(pi, 10000, 10100))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Populating the interactive namespace from numpy and matplotlib\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Anaconda3\\lib\\site-packages\\IPython\\core\\magics\\pylab.py:160: UserWarning: pylab import has clobbered these variables: ['pi', 'random']\n",
+      "`%matplotlib` prevents importing * from pylab and numpy\n",
+      "  \"\\n`%matplotlib` prevents importing * from pylab and numpy\"\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Plot them:\n",
+    "%pylab inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAYoAAAD8CAYAAABpcuN4AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDIuMS4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvNQv5yAAAIABJREFUeJzt3Xl8leWZ+P/PlZP1JCThhAAhyUmA4FZEBKTgghBtRx2rrdXOtLZ20WpFsNMZ26/9zXz76/p9debX/mYE1KLWqtPaRbtZazsqAVQqICKgLJqEkI0lIQlJyJ6c+/vH85xwkpzlOZD9XO/XKy9OnvU+HHiuc2/XLcYYlFJKqVDixroASimlxjcNFEoppcLSQKGUUiosDRRKKaXC0kChlFIqLA0USimlwtJAoZRSKiwNFEoppcLSQKGUUiqs+LEuwHCYNm2aKSwsHOtiKKXUhPL222+fNMZkRzpuUgSKwsJCdu3aNdbFUEqpCUVEKp0cp01PSimlwtJAoZRSKiwNFEoppcLSQKGUUiosDRRKKaXC0kChlFIqLA0USimlwtJAMY4da+7gT3uPjnUxlFIxTgPFOPavv3+Ptb98h9bOnrEuilIqhmmgGKfeq22m5FAdANWNHWNcGqVULNNAMU6t21RKnFivqxrbx7YwSqmYpoEiAmMMu6uaMMaM2j0PHmvh5QMnuGN5IQDVUQSK92qb8flGr6xKqclPA0UEf9xzlFse+RtvljeM2j03bC4jLSmef7p2HunJ8Y5rFK8cOMGN699gywd1I1xCpVQsiRgoRCRZRHaKyF4R2S8i3wlyzAoR2S0ivSJya5D96SJSKyIbArb9NeCaPxERl73dIyKviEip/efUc32TZ6vPZ1hfUgpAef3pUblnWV0rL717jDuWF5DpTqQgK9VRoDDG8NCmD+xrjE5ZlVKxwUmNogsoNsZcAiwErhORZYOOqQK+ADwb4hrfA7YO2vYp+5rzgWzgNnv7g8AmY8w8YJP9+5j4y3vHKK9vA0avn+DhzeUkx7u488rZAHg9bkdNT1ver+e92hZA+zSUUsMrYqAwFv9X1AT7xww65ogxZh/gG3y+iCwGZgAvDzqnxX4ZDyQGXPNm4Gn79dPAxx29k2Hm8xk2lJQxJzuVOdnOvtX7dfb0nVU/wZGTbfxxTy2fXeYlKy0JgHyPm+qmdvrCXM8Yw7qSUnIzU7hg5hSqdJSUUmoYOeqjEBGXiOwB6oBXjDE7HJ4XB/wY+HqI/f9jX7MVeN7ePMMYcwzA/nO6k3sNt1cOnuDQ8VbWFhcxOyvV8cO3vbuXVT/awobNZVHf85EtZSS44vjyijn927weNz19huMtnSHP21bWwDtVp7h35VzmTk+LqvNbKaUicRQojDF9xpiFQB6wVETmO7z+auAlY0x1iOv+HZADJAHFDq8JgIjcLSK7RGRXfX19NKdGZIzVN1GQ5eZjC2ZZ3+ob2x2NfPrF9iqONXfybm1zVPesbmznd7tr+fRSL9OnJPdv93rcAFQ1hH74ryspZWZ6MrctycPrcVMToQailFLRiGrUkzHmFLAFuM7hKcuBNSJyBPgRcIeI/HDQNTuBF7CanABOiEgOgP1n0CE8xpjHjDFLjDFLsrMjLvkaFX97/30ri4h3xeH1uDnd1UtTe/gZ0p09fWx87TAQ3ZBWgEe3lhMnwj1Xzxmw3R8oQl1v++EGdlY0cs/Vc0iKd/XXQI41a/OTUmp4OBn1lC0imfbrFOBa4JCTixtjbjfGeI0xhcADwDPGmAdFJC0gGMQDNwRc8wXg8/brzwN/jOL9nLPA9v6PX5oLnHlYVza0hT33lzurOHm6iwV5GVQ5rIGAldPp+V013Lokj5yMlAH7cjKTccVJyD6S9SWlTEtL4tNLvQPKqh3aSqnh4qRGkQNsFpF9wFtYfRQvish3ReQmABG5TERqsEYubRSR/RGumQq8YF9zL1at4Sf2vh8CHxGRUuAj9u+jJrC9PzHe+uvxZkV++Hb19rFx62GWzvbwiUtzae/uo6Gt29E9N249jM8Y7r167pB9Ca44ZmUmB73325VNbCtr4O4Vs0lOcFlljVADUUqpaMVHOsAezXRpkO3fCnj9Flb/RbjrPAU8Zb8+AVwW4rgG4JpI5Ropge39fvlTIz98n9tVw/GWTn502yV09fYBVmCZZo9eCqWutZNf7qziE5fmkm8/5AfzetxBA8X6klI8qYnc/uGC/m05GeFrIEopFS2dmR1gx6D2fr+URBfTpySFfPj29Pl4dEs5l3ozuaIoi4Is59/qH3/tMD19Pu5bVRTyGK8ndci19tWcYsv79dx55WxSk87E+3hXHLmZKTpEVik1bDRQBFhfUjagvT9QqG/1AL/fXUvtqQ7uL56HiJA3NfJIJYCG0138fHsVNy/MpXBaasjjvB43DW3dnO7qHVDWjJQE7lheMOT4gqzQZVVKqWhpoLDtrmrijbKTA9r7A1kzpId+S+/t8/HwljIuzs1g5fnW6KvkBBcz0pOojPCw/ukbFXT29oWtTfjvDWcCz4GjLbxy4ARfvKKQKckJQ47PdzibWymlnNBAYVu/qZSp7oQB7f2B8j1ujjZ30N07cPL5n/YdpbKhnTXFRYhI//ZwNRCAU+3dPPNmJTdcnEPR9LSwZRs8kmnD5lLSkuL54uWzQx7f2NatCx4ppYaFBgrg3ZpmNr9fz11XzRnQ3h/I63FjDNSeOlOr6LPTfFwwcwofuXDGgOMjfav/2bYjnO7qZW1x+NqE/95g9XmUnmjlL+8d5/OXF5DhHlqbCDx+uJqftrxfxx/eqR2WaymlJh4NFFijh9KT44O29/v5h8gGzqXwJw1cU1xEXJwMPN7j5nhLJ509fUOu1drZw8+2VfDRi2Zwwcz0iOXLcCf0pxvfsLmMlAQXd145J+TxwzlEtqO7jwee28u//9XR1Bml1CQU84HCv0jQF6+YHbS932/ww9efNHBudirXz88JevzgGojfM29W0tLZy9rieY7L6c1y87fyk/xp71E+t6wAT2piyGPzB9UojDH8amcVx5tD54sK5dmdVZw83c3xls7+Yb8j7bld1drHotQ4EvOBwr9I0JeuCN7e75edlkRSfFz/w9efNHBNcRGuQbUJCN3809bVyxOvH2bV+dlcnJfhuJxej5vy+jYS4+O466rQtQmAjJQEMlIS+u/9WulJHvzdu/xyZ5Xj+4GdkmRrOYnxcVbQaxr5IbdvHWnk68/v47+3V474vZRSzsR0oAhcJChUe79fXJyQb3dQD04aGEyo5p+fb6+kqb2Htdc4r01Y17OGz356qZfsKeEn8fnvX9XYYZV1U2nQskTy3K5q6lq7WGuPyoo0ims4rLPLGmlosVJq9MR0oHjp3eMDFgmKxP/wHZw0MJjsKUkkJ8QNeOB1dPfx+OuHubJoGou80S3ct8ibSVZqIvesGJrmI2hZs6zO9DcPN7Crsinq2drdvdYkwiUFU/mHy/KBkU8L8k5VE6+XntSZ5UqNMzEdKNYWF/Hy11b0LxIUidfjpqqhrT9p4CcW5YY8VkSGDJH9pd3ef3+UtQmAj35oJrv+7VpmZiRHPtgua01TOw+9Wsr0KUncuCAnqofv73bXcLS5k7XXzAsa9EbC+pIyproTuOXS3KiSKiqlRlZMBwoRCZlfKRivx01bd19/0sCEELWJwOP9D2crBXk5H57tYelsz1mXN5qy9vQZdlQ0cveKOcybnkZdaxcd3ZE7pHvsSYSX5GeyYt60oEFvuL1X20zJoTruvHI2F+SkO0rrrpQaHTEdKKLl73cYnDQwlMA+jeferuFES9dZ1SbOhr+sWXbSQH9ArG6K/LD/456jVDd2cH/AJMKRDhTrNtlDlC8v1FTpSo0zGiiiMG+GNYP63pVzByQNDMXrcdPe3cfxlk5+sqWcRd5MLp+bNdLFBGBudhpxAnevmENKosvRSnlgTSJ8eHMZH5qVTvEFZ1ah9ScmHInmoEPHrSHKX7hiNunJCRoolBpnIqYZV2cUZKVS8i9XMztMAr9A/gfeQ6+WUnuqg+9/Yn5UzUfnYmZGMpsfWNlfBqcP3xf3HaXiZBs/+eyiQSlJUmiz19gIljrdGENzRw+Z7tDzO0JZX2INUb7THqKc77EWb9K5FEqND1qjiNKc7DTHD3v/w/lXb1WzIC+DlecN75KtkRRkpfaX1ZOaSGqiK2yg8PkM60vKOH/GFD560cwB+yIt3vTIlnKu+GEJ7d29QfeHEmyIsjsxnuwpSRFXFFRKjQ4NFCPIn24cYM2qolGrTQQjInizhq5rEegv7x2nrO50yJQkEPxbfmtnDxu3ltPW3Rd1c9GGEislyeBJhJH6RPp8RkdFKTVKNFCMoJREFzPTk62kgRfNiHzCCPN6UkI+fK3aRClzslO54eKhKUnCrbHhT0kCUBnFENqKk228sPconw2SkiRUWnewmrluf2I7Dzy3z/G9lFJnTwPFCNvwmUt55PZFY1qb8PMGjMIa7FV/SpJVwVOS+NfYCJWSZHGBNYEwmn6FhzeXkeCK466rhk54DJXWHayUJNsPN7KnusnxvZRSZ08DxQhbUuhhTnb49SZGi9fjpqvXR11r14DtVkqSMgqy3Nx0SfCUJP7zBweKX+ywUpL8699f2J/h1onqxnZ+/04tn/mwl+lThk4iDJVUcUBKkqYOfD5tflJqpGmgiCGDs8r6bXm/nndrm1m9cm7IlCRgDZENPLezp4/HXqvoT0nijWIJ1ke2lOMSCZmSpCBIWnegPyXJhTnpdAcJekqp4aeBIoYUZFnDegP7GYwxZ1KSXBp+EuHgNTaslCRd/YsvOZ2UV3uqg+ffruZTl+WFTEkSqvN83SYrJcnXrrUmLjoNTC+9e4zPPL5dayBKnQUNFDEkNzMFkYEP121lDf0pSRLjI6QkyUrpbw7q7OnjJ1vLWTrbw4fnWJMIvZ5Uaho76IvwMN64tRyAe1eGXt1vcFp3gJ0VjWw/3Mg9V89l3owpgLNA0dPn4wd/Psjfyhs43hL9mhxKxToNFDEkMT6OWRkpA76lryspdZySJHDSXn9KkoDFl7weN919Pk6EeRifaOnkV29V88lFeeRmpoQ8LjCtu9/6klKmpSXymaVecjNTiBOocjDX4ve7a/v7OnS2t1LR00ARY/IDhshuP9zAzopG7rl6jqOUJP4+jvK60zy6uYxF3kyuKDqTksTJ7O+NWw/T5zOsDlObCLxelT1E1p+C/K6rrJQkifFx5GSEHu7r12snOMyxm7g0UCgVPQ0UMSawH8H6hp7Ep5d6HZ2bnZZESoKLJ16v6E9BPjDNR/hAcfJ0F8/urOTjC3P7Z3pHKqs/v5Q/BfnnlhUM2B/pwf/C3qNUNrTzv2+8iDjRtCBKnQ0NFDGmICuVutYutpWdZFtZA3evmE1yQuTaBJxZY+N4S2fQlCQ5mcnWokMhJt09/vphunt9rF7lcPElj5vTXb28VnqyPwV5alL8gP1VISblgTV7e8PmMi6YOYXr589kVmbkGohSaigNFDHG33z0b394D4+dgvxszg+WkiTBFceszOSgD+PGtm7++81Kblwwi7kO55X4ayj/+w/v9acgH7A/y83J010h80v9+d1jHK5vY22xVfMpyHJHNXNcKWWJGChEJFlEdorIXhHZLyLfCXLMChHZLSK9InJrkP3pIlIrIhvs390i8mcROWRf84cBx35BROpFZI/9c9e5vkl1hv/hW3Gybcg3dCc+etEMrp8/M2RKkoJBcy38nnyjgvbuPtYUR+6b6C9rQCLCL9opyAfsD9PU5fMZNpSUUjQ9jevnz+w/XpuelIqekxpFF1BsjLkEWAhcJyLLBh1TBXwBeDbENb4HbB207UfGmAuAS4ErROT6gH2/NsYstH+ecFBG5ZD/4ZqRksAdy6OrTQB86rJ8Hv3s4pApSfKDPIybO3p4+m9HuOHimZxnD2t1It/OL5WWFM+Xrhia5iPcGhsvHzjOBydOszYgwWG+x01DWzenu6LLcKtUrIv4ddJYiYFO278m2D9m0DFHAERkSGIeEVkMzAD+Ciyxj28HNtuvu0VkNxB5fKY6Z1PdCXxoVjq3LMpjyqBv6MPBG/AwTrNrK09tO0JrVy9rVkW3ul9Koosri6Zx9XnZ/SnIB98LhtYojDGs21TG7Gmp3Lhg1pDjqxvbuTAnPaqyKBXLHPVRiIhLRPYAdcArxpgdDs+LA34MfD3MMZnAx4BNAZs/KSL7ROR5EckPcd7dIrJLRHbV19c7KY7C6pD+8/1XceeVQ7+hD4fB3/JbO3t4clsF1144g4tmRf9w/vldH+bLK+YE3ZfpTmBKUvyQGsymg3UcONbCfYMSHBZ47Jnp2vykVFQcBQpjTJ8xZiHWt/6lIjLf4fVXAy8ZY6qD7RSReOCXwDpjzGF785+AQmPMAuBV4OkQZXrMGLPEGLMkO3t0FwRSoQ3+lv/f2ytp7ujh/muc9004JTJ0Up41lLaUfE8KNy8cmODQ6XKwSqmBohr1ZIw5BWwBrnN4ynJgjYgcAX4E3BHYcQ08BpQaY/4r4B4Nxhh/prfHgcXRlFGNrcDmnfbuXp54vYKV52ezIC9zRO5XkOWmMiBQbP2gnr01zaxeWUTCoASHGe6EqDLcKqUsTkY9ZdvNQ4hICnAtcMjJxY0xtxtjvMaYQuAB4BljzIP2tb4PZAD/NOh+gavm3AQcdHIvNT5kuBPISEmgqrGdX2yvorGtm7XF0fVNRMPrcVPTaKUb90/Mm5WRzCcXBe/yiibDrVLK4qRGkQNsFpF9wFtYfRQvish3ReQmABG5TERqgNuAjSKyP9wFRSQP+FfgImD3oGGw99tDZvcC92ONplITiNfj5v0TrWx87TBXFGX1L2o0EvL9+aVaO3mzvIG3K5vCJjjUIbJKRc/JqKd9WENYB2//VsDrt4gwaskY8xTwlP26Bgg6vtIY803gm5HKpcYvr8fNn989BsCG4iH/dIb9XmD1Ozy0qZQZ6UnctiTo+Af7+FReOXCCPp8JupKfUmoonZmthp1/9vbS2R6WzcmKcPS58QeK3+6uYUdFI/esmBs2JYnX46anz2i6caWioIFCDbs52dYw1PtHsG/CL3eqlW78N7tqmJaWGDHBoY58Uip60eVvUMqBmxfOYva0VC4r9Iz4vaz8UinUNHVw9worBXk4gaOyls8d2dqOUpOFBgo17JLiXaMSJPxmT0ulravXUYLD/gy32qGtlGMaKNSE9+2bPkRnT5+jBIcJrjhyM1MGzL1QSoWngUJNeE7Tlvs5WfBIKXWGdmarmBMsw61SKjQNFCrmeD1uGtu6ae3sGeuiKDUhaKBQMacgK/za3kqpgTRQqJgTOERWKRWZBgoVc/LDLKGqlBpKA4WKORkpZzLcKqUi00ChYpI1RLZjrIuh1ISggULFJG+Wm6qGtrEuhlITggYKFZO8Hjc1TR30+cxYF0WpcU8DhYpJXo+bXp/hWLM2PykViQYKFZO8OvJJKcc0UKiYpOtSKOWcBgoVk3IykonXdONKOaKBQsWkeFccuVNTNFAo5YAGChWzvJpFVilHNFComJXvcesCRko5oIFCxawCj5tT7T00d2i6caXC0UChYpZmkVXKGQ0UKmbla6BQyhENFCpmeXUBI6Uc0UChYlZ6cgJT3Qnaoa1UBBooVEzTIbJKRRYxUIhIsojsFJG9IrJfRL4T5JgVIrJbRHpF5NYg+9NFpFZENti/u0XkzyJyyL7mDwOOTRKRX4tImYjsEJHCc3uLSoWW73Fr05NSETipUXQBxcaYS4CFwHUismzQMVXAF4BnQ1zje8DWQdt+ZIy5ALgUuEJErre33wk0GWOKgP8E/t1BGZU6K16Pm9qmDnr7fGNdFKXGrYiBwlhO278m2D9m0DFHjDH7gCH/20RkMTADeDng+HZjzGb7dTewG8izd98MPG2/fh64RkQkmjellFMFWf50451jXRSlxi1HfRQi4hKRPUAd8IoxZofD8+KAHwNfD3NMJvAxYJO9KReoBjDG9ALNQFaQ8+4WkV0isqu+vt5JcZQaIl/TjSsVkaNAYYzpM8YsxPrWv1RE5ju8/mrgJWNMdbCdIhIP/BJYZ4w57N8crAhByvSYMWaJMWZJdna2w+IoNZCuS6FUZPHRHGyMOSUiW4DrgPccnLIcuEpEVgNpQKKInDbGPGjvfwwoNcb8V8A5NUA+UGMHkgygMZpyKuVUTkYKCS5NN65UOE5GPWXbzUOISApwLXDIycWNMbcbY7zGmELgAeAZf5AQke9jBYF/GnTaC8Dn7de3AiXGGF3YWI0IV5yQN9WtCxgpFYaTpqccYLOI7APewuqjeFFEvisiNwGIyGUiUgPcBmwUkf3hLigiecC/AhcBu0Vkj4jcZe/+KZAlImXAPwMPhriMUsNCh8gqFV7Epid7NNOlQbZ/K+D1W5wZtRTqOk8BT9mvawjeF4ExphMr4Cg1KryeFPZWnxrrYig1bunMbBXzvB43zR09NLdrunGlgtFAoWKe15MKQHXTyDQ/vXrgBJsOnhiRays1GjRQqJjnHyJbOQId2s0dPXzt13v4//7n/WG/tlKjRQOFinmR0o0bY/jDO7VntRLeU9uO0NrVS3VjO6MxeM/nMzzx+mGOnuoY8Xup2KGBQsW8tKR4slITQwaKlw+c4J9+vYc/vFMb1XVbO3t4clsFia442rr7aGzrHo7ihvXygeN8/88H+e3bNSN+LxU7NFAohTVENli6cWMM6zaVAtE3TT3zZiXNHT3cu3IuMPKzv62ylo3KvfzqWjp58o2KUaktqbGjgUIprH6Kysa2Ids3v1/H/qMtiET38G3v7uWnb1Sw8vxsblyQA4z8w3vTwToOHGsZ1Znm/+elg3z3xQNUnBz6d6cmDw0USmEFiqOnOukJSDfu/4aem5nCqvOnUxUkkITyi+1VNLZ1s7Z43pnEgyM4+9sYw7qSUrweN9fPzxmVxZgqTrbxwt6jgObKmuw0UCiF1aHd5zMcO3Um3fjrpSfZU32K1avmMmdaKlUOO6Q7e/rY+NphriyaxuKCqSQnuJiRnjSiD9MtH9Szr6aZ1SvnMic7lWMtnXT19o3Y/QAe3lxGnL0CgAaKyU0DhVIMzSLr75vIyUjm1sV5eLPcdPb4qD/dFfFav9xZxcnTXdx/zbwB1x+ph6m/rLmZKdyyKA+vx40xUNM0ciOfqhra+f07tXxueQHJCXGOa0vGGEoOneB0V++IlU0NPw0UShEwl8JuXnrzcAO7Kpv4ytVzSYp39TcfRWrS6ezp4ydby/nwbA9LZ3v6t4fqLB8O28oaeKfqFF+5eg6J8XGjkjr9kS1luOKEr1w9N6og+HrpSb701C5+t1tHZU0kGiiUAmamJ5Poiut/4K3fVMb0KUn8w2X5ABQ4nJT33Ns1nGjp4qsBtQnr/PDNQX0+c9bDZ9eVlDIjPYnbllhl9Y5wn0hNUzvPv13Dpy/LZ0Z6suNAYYzhIXsEmXZ+TywaKJQC4uKEPE8K1Y3t7DrSyJuHG7h7xRySE1wA5E5NiTjyqbvXx6Oby1hcMJXlcwcuyujNSgnbHPR/XjpI8Y+30OeLbpjp9sMN7Kxo5CtXz+0va/aUJKs5aIRqFI9uKUcE7rnaGvbr9Tjrv3mzvIG3K5uAyDUzNb5ooFDK5v9mvK6kjKzURG7/cEH/vqR4FznpyWEfvr/bXcPR5k7uv2Yeg5d5D9ccVNfSyX9vr+RUew/HW6Jbu3t9SSnT0pL49FJv/zYRGbE+kWPNHTy3q4bbluQzKzMFsLLvtnf30RChRvTQJqvmc/V52dr5PcFooFDK5vW4OXSsldc+qOfLK+aQkugasD9cP0NPn49HtpRzSV4GK+ZNG7I/XB/HY68dprvXGpZb2eC8Sebtyka2lTVwT0DNJ/C9jMS39o1bD+Mzhnvt2gREToECsONwAzvsms+86WmOR5Cp8UEDhVI2r8dNr8+Q6U7gs8sKhuwvyHKH7KP4456jVDW2s7Z4aG0CIDstiZQE15DzT57u4uc7KllaaHV8R/NwX7epDE9qIrcv8w7Z57Q5KBp1LZ08u7OKWxbl9gc+/70gfJ/I+pKy/ppPgX8EWWvkEWRqfNBAoZTN3zx05xWzSUsauqaX1+OmrrWLju6BHdJ9PsPDm8u4KCeday6cHvTaoZqDnni9gq5eH9//xHxccc5nVO+tPsXWD+q566rZuBODldVqDjp5evjySz322mH6fIb7VhUN2J431WqCClX2tyubeKPsJHevmE1ywpkRZNr8NHFooFDKtuK8bP7XdRdw51Wzg+73P+BqBq1b8eK+o1ScbOP+a4qC1iYCzw+sMTS1dfPMm0f42IJZnDdjCrmZKVQ1Opv7sL6klIyUBD4XpOYDzpqDouGv+dx8ySwKslIH7EtOcDEzTP/N+pJSPKmJ/bW0kUzrrkaGBgqlbMkJLu5dOTfoN3QI3iHt8xk2lJRx/owpfPSimWGv769R+JuDntxWQXt3H2uKi87sd9BH8V5tM68erOPOK2czJTkhxL3s5qAo0o6E46/53FdcFHS/N8sdtOlpb/Uptrxfz5evmtP/95o31R117iw1tjRQKOWQ/5t04Dfhv+4/TmndadYUFxEXF7o2YZ3v7m8Oau7o4altR7h+/kzOmzEFsB+2Dh6eG0rKmJIcz+cvLwx5TH9zUMO5z85utGs+Ny6YxdzstKDHhBpltb6kjEx3Ap9bfqbmkxgfx6yMFB0iO4FooFDKoanuBNKS4vsfiD6flTpjTnYqN1ycE/H8wBqJf0GjNQHf0L0eN03tPbR0hl4g6dDxFv66/zhfvLyQjJTgtQmI3BwUjSffsGo+a0PUJsAq+/GWTjp7zvTfWDWfE0H7fPI9KVRqoJgwNFAo5ZCIDOhnePXgCQ4db2XNqiJcEWoTcKaP48CxFn76xmGuvXAGH5qV0b/f6yBNyIaSMlITXXzpyuD9KIGGY4hsc3sPT//tCDdcfKbmE0xB1tD+m/6azxWFQ4+3R2WpiUEDhVJR8HpS+vsZ1peUUZDl5qZLZjk6N8+e3b1uUyktnb3cf83Ab+iRUm+U1Z3mz+8e447LC8l0J0Yua1bwNTai8bO/VVg1n1Xzwh43eCTT+8dbrZp8fgZlAAAa5UlEQVTPFbNJD9KP4s1yUx9kBJkanzRQKBWFgizrm/Dm9+t4t7aZ+1YWEe9y9t/I3xxU39rFyvOzWZCXOWB/pJFKD28uIznexV0OahNgBZ4TLV0DmoOi0drZw5NvVPCRi2Zw0az0iPeCM0FufUkpaUnxfClIbQKGBhY1vmmgUCoK+R43Xb0+vvfiQXIzU/jEotyozwdYWzz0G3p6cgKZ7oSgD8+Kk238cU8tn13mJSstydG9vCGG8zr1zJuVVs0nSFkHy0pNJDXRRWVjO2V1rVbNZ3lByJpPgQaKCUUDhVJR8D98K062sXrVXBIc1ib8PnbJLD67zMvigqkhrx/s4fnI5jISXHF8ecUc52XNOvv5Cm1dvTzx+mFWnZ/NxXkZEY8P7L95eHM5KQku7roqdFlHIxW6Gj7BB4wrpYLyP+D8CxpFK9QEucDrv1vbPGBbdaO1SNBnlxUwfUpy1GU9m4fxz7dX0tTew9prItcmAu/3dmUTTe3dfPmqOXhSQ/ejZLoTmJIU3z9vxBjDt1/Yz7UXzeCqedlRl1eNrIhfh0QkWUR2isheEdkvIt8JcswKEdktIr0icmuQ/ekiUisiGwK2/UBEqkXk9KBjvyAi9SKyx/6562zfnFLDLW9qCkXT03jgo+eTFO+KfEKUvB43tU0d9Aas3f3IlnLixFokKBr9zUFR1ig6uvt4/PXDXDVvGou8wWs+wRRkuWlo6yYxPi5sbQLslCYB80ZKDtXx9JuV/HHP0ajKqkaHkxpFF1BsjDktIgnAGyLyF2PM9oBjqoAvAA+EuMb3gK2Dtv0J2ACUBjn+18aYNQ7KptSoSnDF8eo/Xz1i1/cnJjzW3Em+x83RUx08/3Y1/3BZPjMznNcmYOhwXqee3VnFydPdA5ZydcJfg/nM0gKyp0TuR/F63HxwotVayrWkDNCmqPEqYo3CWPzf+hPsHzPomCPGmH2Ab/D5IrIYmAG8POic7caYY2dbcKUmo8Ejn36ytRxjiLo20X+9KNel6OzpY+PWcpbN8XBZoSfyCQEuL5rGsjkevnK1s34Ur8dNdVMHWz6oZ2/1KdKT40dsVT51bhz1xImIS0T2AHXAK8aYHQ7PiwN+DHw9ynJ9UkT2icjzIpIf5blKTViB/Qp1LZ386q1qbl2cR95Ud4QzQ18vmnTjv9lVTV1rV9S1CYC52Wn86u7lTE93VvPxZrnp7vXx3T8dYFZGMp+/vHDI7G41PjgKFMaYPmPMQiAPWCoi8x1efzXwkjGmOooy/QkoNMYsAF4Fng52kIjcLSK7RGRXfX19FJdXavzKyUgh3k43vtFO6716ZejUGZF4s6zhvE7Wfujq7ePRLeUsKZjK8jlZEY8/V4EjyO5dVdSfRyrUcrFq7EQ1ts8YcwrYAlzn8JTlwBoROQL8CLhDRH4Y4R4Nxhj/v+rHgcUhjnvMGLPEGLMkO1tHSajJwRUn5E1NYXdlE7/YUcnHF+b2N0edjf6U3g6an377di3HQizlOhL8ZZuRnsRti/MCJuENT8ZbNXycjHrKFpFM+3UKcC1wyMnFjTG3G2O8xphCrI7uZ4wxD0a4X2B2tZuAg07updRk4c1KZUdFI929Pu5bdXZ9E/3XipAWxM9ayrWMhfmZXBVkKdeRkJuZwnkz0vj6311AcoKrP1+U9lOMP05qFDnAZhHZB7yF1Ufxooh8V0RuAhCRy0SkBrgN2Cgi+yNdVET+wz7HLSI1IvJte9f99jDcvcD9WKOplIoZXo+VIvxjl8xiToi03k7l2vmlInVo//6dWmqaOiIuvjSc4l1xvPy1q/vno2SlJuJOdDlevEmNnojDY+3RTJcG2f6tgNdvYfVfhLvOU8BTAb9/A/hGkOO+CXwzUrmUmqzOmzEFV5ywZtXZ9034JcW7mJWREjZQ9Pb5eHhzGfNz01l1fvClXEfDmeVitelpvNGZ2UqNM/94mZcV87IpnJYa+WAH8j3hA8Wf9h2lsqGdjZ9bPGq1iVC8HjdHHKzyp0aX5npSapxJjI8btiAB4edS9NlLuV4wcwofuXDGsN3zbEU7nFeNDg0USk1yBVmp1Ld20d7dO2TfS+8eo7y+jbXF8yIu5ToaCrLcdPY4G86rRo8GCqUmOf+w0+pBncQ+n2F9SSnzpqdx/fyZY1G0IXSdivFJA4VSk1yoLLL/s/84H5w4zZrionFRm4CAeR86RHZc0UCh1CR35uF7ppPYn4hvzrRUblzgbCnX0ZA31e1oOK8aXRoolJrkptprPwRmkX31YB0Hj7WwelURrnFSmwCrI39WRsqAsnb19tHn087tsaSBQqlJzp9u3P8t3Rirb8LrcXPzwvFTm/DL96T0pxzx+Qyf+smbPPjbfWNcqtimgUKpGBA4RHbLB/Xsq2lm9crol3IdDQWe1P6yvnzgOHtrmoes+qdG1/j7V6KUGnYFWdbaDz6fYf2mUnIzU7hlUfRLuY4Gb5a7fzjvuk3WgkbVOrdiTGmgUCoG5HustR9+904tu6tO8ZWVc0mMH5///f1DZH+27QgHjrVwSV4Gbd19NLR1j3HJYtf4/JeilBpW/pFPP/jzAWamJ/OpJeOzNgFQYJd13aZS8j0prLZzXulIqLGjgUKpGOBP4d3U3sM9V88hKd41xiUKzR/Uunp93LeyiLnZVjoTTT8+djQpoFIxYFZmCnECntQkPr3UO9bFCSvTHs6bnpLALYvy8Nl9E1qjGDsaKJSKAQmuOO5YXsiSwqkkJ4zf2gRYw3n/9e8vxOtx9/ejzExP1kAxhjRQKBUjvn3Th8a6CI7946Baj9fj1qanMaR9FEqpcc+bFTpVuhp5GiiUUuOe1+PmeEsnnT19Y12Uc/bcrmruevqtsS5GVDRQKKXGPf9IqJqmiV2r6Oju44d/OcSrB+to7ewZ6+I4poFCKTXuebMmxzoVv9hR2T9xcCK9Fw0USqlxbzKsU9HZ08fG1w4zKyMZmFjzQjRQKKXGvazURNyJrgn1LXywX79VTX1rF9+5eT6gNQqllBpWIjKhh8h29fbx6JZyls728JGLZjDVnaCBQimlhltgqvSJ5rldNRxv6eSr18wDJt570UChlJoQ/A/XiZZuvLvXx6NbylnkzeTyuVkAeLNSNVAopdRwK8hy09Xro661a0zu/+K+o2c1PPd3u2uoPdXBV689DxFr2VmvJ4Xapg56+3zDXcwRoYFCKTUh+NepGItv4nurT7Hm2Xd4atuRqM7r6fPx8JYyLsnLYMW8af3bCzyp9PoMx5o7h7mkI0MDhVJqQijIstKNj8UQ2fUlpda9owxSf3inlurGDu6/Zl5/bQLOBL1Q76W5o4efvlFBn298NLNFDBQikiwiO0Vkr4jsF5HvBDlmhYjsFpFeEbk1yP50EakVkQ0B234gItUicnrQsUki8msRKRORHSJSeHZvTSk1meRmpiAy+jWK92qbefVgHXES3dyH3j4fj2wp50Oz0im+YPqAfQURJhCu31TK9148wJ7qprMv+DByUqPoAoqNMZcAC4HrRGTZoGOqgC8Az4a4xveArYO2/QlYGuTYO4EmY0wR8J/Avzsoo1JqkkuMj2NWRgrVoxwoNpSUMSU5nlsW5UXVmf7ivmNUnGwbUpsAmJGeTKIrLmigOHm6i5/vqATGzwTDiIHCWPzf+hPsHzPomCPGmH3AkJ4ZEVkMzABeHnTOdmPMsSC3vBl42n79PHCNDP5bVkrFJK/HTWVD26jd79DxFv66/zhfvGI282el09HTR/3pyJ3pfT7D+pJSLpg5hY9cOGPIfleckDc1harGoe/lidcr6Or1jUntKRRHfRQi4hKRPUAd8IoxZofD8+KAHwNfj6JMuUA1gDGmF2gGsqI4Xyk1SVlDZDtG7X7rS8pITXTxpSsK+/tInNRoXnr3GOX1Vm0iLi7499xgqdMb27p55s0jfGzBLHLSk8fNBENHgcIY02eMWQjkAUtFZL7D668GXjLGVEdRpmB/q0PqeiJyt4jsEpFd9fX1UVxeKTVRebPcnDzdRXt374jfq6yulZfePcYdlxeS6U50POrKZ9cm5k1P47oPzQx5nFU7GtiU9eQbFXT09LG2uGhcrcER1agnY8wpYAtwncNTlgNrROQI8CPgDhH5YYRzaoB8ABGJBzKAxiBlecwYs8QYsyQ7O9thcZRSE5l3FIfIbigpIyXBxZevmgNA3lSrMz1Sv8H/7D/OBydOs6a4KGRtAqz30trZS3OHlW68ub2Hp/52hBsuzmHejClWIJkogUJEskUk036dAlwLHHJycWPM7cYYrzGmEHgAeMYY82CE014APm+/vhUoMRNtKqZSakT0B4oRbpI5XH+aF/Ye5XPLCvCkJgKQnOCKuHa3z2d4aFMpc6alcuOCWWHvMTgj7pPbKjjd1cva4iLAGg5c39pFR/fYL9bkpEaRA2wWkX3AW1h9FC+KyHdF5CYAEblMRGqA24CNIrI/0kVF5D/sc9wiUiMi37Z3/RTIEpEy4J+BSIFFKRUjRqtG8fDmchLj47jLrk345UdITPjqwRMcOt7KmuIiXGFqE3BmXkhVYzstnT08ua2Cv/vQDC6Ymd5/L4DqcbBYU3ykA+zRTJcG2f6tgNdvYfVfhLvOU8BTAb9/A/hGkOM6sQKOUkoNkOlOYEpy/IgGiqqGdv6wp5bPLy8ke0rSgH0FHjdbPwjeJ2qMYV1JKQVZbm66JHxtAiDfk2Ldr7Gdp7cdobWzl7XF8/r3B9Y4zpsx5WzfzrCIGCiUUmq86E83PoKB4pEtZbjihHuunjNkn9fjps5uDkpJdA3Yt/n9Ot6rbeE/bl1AvCtyY407MZ5paUkcONbCG6UnufbC6czPzejfXzCGKUsG0xQeSqkJpWAERwPVNLXz/Ns1fPqyfGakJw/Z71+SdXBzkDGGhzaVkTc1hU9cmuv4fgVZbl569xjNHT0DahNg156S4qkaxXkjoWigUEpNKPkeNzWNHSOSB+nRLeWIwD1Xzw26P1Rn+uulJ9lbfYrVK4tIcFCbCLyeMbDy/Gwuyc8csE9Exs0QWQ0USqkJxetx093n40TL8GZePdbcwXO7arhtST6zMlNC3hsGJge0ahOlzMpI5pOLndcmAArtDu3BtYnA+42HIbIaKJRSE0qB58xooeG0cethfMZwb4jaBIAnNZG0pPgBs7PfLG/g7com7l05l6R4V8hzg/nsMi+P37GExQVTg+73Zlm1J98YZ5HVQKGUmlBGYi5FXUsnz+6s4pZFuf3DUoMREfIH5Zt6aFMp06ckcduS/Kjvm5WWxEcuGpoLyq+/9tQ6tutWaKBQSk0oOZnJuOJkWGsUj712mD6f4b5VRRGPLQgYdbXjcAM7Khq55+q5JCdEV5twYvCkvLGigUIpNaEkuOLIzUwZtkDhT+t988JZ/ZPgwvFmualu6rBzOpUxLS2Jzyz1DktZBhupZrZoaaBQSk04w9nJ+/jrh+nq9TmqTYA16qq718df3jvOG2UnuWfFnCFzKoZLf+1JaxRKKRWdfI97QIfye7XN/OGd2qiv09jWzX+/WcnHFsxibnaao3P8E+G+86f9eFITuX3ZyNQmYPhrT2dLA4VSasIpyHLT2NZNa2cPPp/hX36zl//1231Rjw7yp/VeU+ysNgFn+g3qWru466rZuBNHNsHFeBgiq4FCKTXhBCYHfPnAcd4/0UpXr4+61sirz/n1p/WenxNVLqXcqSnEiTVz+o7lhdEWPWreLPeoL/86mOZ6UkpNOIFDZNeXlJHgEnr6DFWN7czMGJp6Ixh/Wu9oahNgNQfdsiiPJQVTSUsa+Ueo13Om9jQlOWHE7xeM1iiUUhOOP+fSz/52hAPHWrhnhTVJzmlbfktnDz/bVsFHL5rBhTnpUd//R7ddwj+O0EinwcZDckANFEqpCSc9OYFMdwI7KxrJ96Rw36oi4gTHCfSe+dsRWgal9R6v+tel0EChlFLR8X/Tvm9lESmJLnIynI0OOt3VyxNvVFB8wXQuzsuIePxY89eexnLSnfZRKKUmpAtz0mlq7+GWRdaaaU5HB/18eyWn2nv6lxwd79KTE5jqThjTpicNFEqpCenbN32I7j4fifFWw0hBlptXD54Ie057dy+Pv3aYFedlc6k3eCK+8WikF2uKRJuelFITUnKCi/SAUUD5HjcnT3fT1tUb8pxnd1TR0NbN/ROkNuHnzUrVQKGUUufKG2F0UGdPHxtfO8zlc7NYUugZzaKdM68nhdqmDnr7fGNyfw0USqlJoSArfKD41c4q6lu7JsRIp8EKPKn0+gzHmscm3bgGCqXUpOANM4y0q7ePn2w9zNJCD8vnZo120c5Z/hjPpdBAoZSaFDJSEpiSHB90GOlzu2o43tLJ/ddMvNoEjP0QWQ0USqlJQUQoyBo6Oqi718ejW8pZ5M3kiqKJV5sAmJmeTKIrTmsUSil1roINI/3d7hpqT3Ww9pp5iMgYlezcuOKEvKkpVDU6m3k+3DRQKKUmDa8nlZqmdvrsdOM9fT4e3lLGgrwMVp6XPcalOzfeILWl0aKBQik1aXg9bnr6DMdbrNFBf9xzlOrGDtYWT9zahJ/X46ayoR1joltzYzhooFBKTRr+kU+VDW30+QwPby7jwpx0rr1w+hiX7Nx5PW5aO3tp7ugZ9XtHDBQikiwiO0Vkr4jsF5HvBDlmhYjsFpFeEbk1yP50EakVkQ0B2xaLyLsiUiYi68QO9yLybfvYPfbPDef6JpVSscE/l6K6sZ0X9x2l4mQbX72maMLXJiAwCI5+85OTGkUXUGyMuQRYCFwnIssGHVMFfAF4NsQ1vgdsHbTtUeBuYJ79c13Avv80xiy0f15yUEallCInI5n4OKHipLWg0fkzpvDRi2aOdbGGhTfIhMLy+tOj0hQVMVAYy2n71wT7xww65ogxZh8wZH65iCwGZgAvB2zLAdKNMW8a610+A3z8rN+FUkoB8a44cqem8Jtd1ZTVnWZNcRFxcRO/NgFDU5RUN7bzd//5Gj99o2LE7+2oj0JEXCKyB6gDXjHG7HB4XhzwY+Drg3blAjUBv9fY2/zWiMg+EXlSRCZOikel1JjzLx06NzuVGy7OGeviDBt3YjzT0pKospueHt1aTpwIf79g5N+jo0BhjOkzxiwE8oClIjLf4fVXAy8ZY6oHbQ8W4v21lEeBuVjNXMewAs0QInK3iOwSkV319fUOi6OUmuz86S7WFBfhmiS1CT//hMKjpzp4blc1n7osj5yMlBG/b1TrURhjTonIFqz+hPccnLIcuEpEVgNpQKKInAYewgo6fnnAUfse/QnlReRx4MUQZXkMeAxgyZIloz9eTCk1Lt0wP4e2rl4+tmDWWBdl2Hk9bnZWNPKTreUA3LtydNKlOxn1lC0imfbrFOBa4JCTixtjbjfGeI0xhcADwDPGmAeNMceAVhFZZo92ugP4o32PwHrUJ3AWkJRSCoAr503joX+8lHjX5Bv97/W4Odrcwa/equbWxXnkZo58bQKcNT3lAJtFZB/wFlYfxYsi8l0RuQlARC4TkRrgNmCjiOx3cN17gSeAMqAc+Iu9/T/sYbP7gFXA16J7S0opNTl5PW6MgT6fYfUo1SbAQdOTPZrp0iDbvxXw+i0GNiUFu85TwFMBv+8ChvR1GGM+F6lMSikVi/zzRG65NLe/L2Y06JrZSik1QSzIy+SuK2dz11VzRvW+GiiUUmqCSIyP499uvGjU7zv5enuUUkoNKw0USimlwtJAoZRSKiwNFEoppcLSQKGUUiosDRRKKaXC0kChlFIqLA0USimlwpKxWKh7uIlIPVB5lqdPA04OY3Emilh837H4niE233csvmeI/n0XGGOyIx00KQLFuRCRXcaYJWNdjtEWi+87Ft8zxOb7jsX3DCP3vrXpSSmlVFgaKJRSSoWlgcJeJS8GxeL7jsX3DLH5vmPxPcMIve+Y76NQSikVntYolFJKhRXTgUJErhOR90WkTEQeHOvyjAQRyReRzSJyUET2i8hX7e0eEXlFRErtP6eOdVmHm4i4ROQdEXnR/n22iOyw3/OvRSRxrMs43EQkU0SeF5FD9me+PEY+66/Z/77fE5FfikjyZPu8ReRJEakTkfcCtgX9bMWyzn627RORRedy75gNFCLiAh4GrgcuAj4tIqO/IsjI6wX+xRhzIbAMuM9+nw8Cm4wx84BN9u+TzVeBgwG//zvwn/Z7bgLuHJNSjayHgL8aYy4ALsF6/5P6sxaRXOB+YIkxZj7gAv6Ryfd5PwVcN2hbqM/2emCe/XM38Oi53DhmAwWwFCgzxhw2xnQDvwJuHuMyDTtjzDFjzG77dSvWgyMX670+bR/2NPDxsSnhyBCRPODvgSfs3wUoBp63D5mM7zkdWAH8FMAY022MOcUk/6xt8UCKiMQDbuAYk+zzNsa8BjQO2hzqs70ZeMZYtgOZIpJztveO5UCRC1QH/F5jb5u0RKQQuBTYAcwwxhwDK5gA08euZCPiv4BvAD779yzglDGm1/59Mn7ec4B64Gd2k9sTIpLKJP+sjTG1wI+AKqwA0Qy8zeT/vCH0Zzusz7dYDhQSZNukHQImImnAb4F/Msa0jHV5RpKI3AjUGWPeDtwc5NDJ9nnHA4uAR40xlwJtTLJmpmDsdvmbgdnALCAVq+llsMn2eYczrP/eYzlQ1AD5Ab/nAUfHqCwjSkQSsILEL4wxv7M3n/BXRe0/68aqfCPgCuAmETmC1aRYjFXDyLSbJmByft41QI0xZof9+/NYgWMyf9YA1wIVxph6Y0wP8Dvgcib/5w2hP9thfb7FcqB4C5hnj4xIxOr8emGMyzTs7Lb5nwIHjTH/f8CuF4DP268/D/xxtMs2Uowx3zTG5BljCrE+1xJjzO3AZuBW+7BJ9Z4BjDHHgWoROd/edA1wgEn8WduqgGUi4rb/vfvf96T+vG2hPtsXgDvs0U/LgGZ/E9XZiOkJdyJyA9Y3TRfwpDHmB2NcpGEnIlcCrwPvcqa9/v/B6qf4DeDF+o92mzFmcEfZhCciK4EHjDE3isgcrBqGB3gH+KwxpmssyzfcRGQhVgd+InAY+CLWF8JJ/VmLyHeAf8Aa5fcOcBdWm/yk+bxF5JfASqwMsSeA/xf4A0E+WztgbsAaJdUOfNEYs+us7x3LgUIppVRksdz0pJRSygENFEoppcLSQKGUUiosDRRKKaXC0kChlFIqLA0USimlwtJAoZRSKiwNFEoppcL6v+ZdZIkh1RKHAAAAAElFTkSuQmCC\n",
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x13ec96d14a8>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plt.plot(estimates);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1001 0\n",
+      "1002 1\n",
+      "1003 1\n",
+      "1004 2\n",
+      "1005 3\n",
+      "1006 5\n",
+      "1007 8\n",
+      "1008 13\n",
+      "1009 21\n",
+      "1010 34\n",
+      "1011 55\n",
+      "1012 89\n"
+     ]
+    }
+   ],
+   "source": [
+    "def fib(max):\n",
+    "    a, b = 0, 1\n",
+    "    while a < max:\n",
+    "        yield a\n",
+    "        a, b = b, a + b\n",
+    "for i,r in enumerate(fib(100),start=1001):\n",
+    "    print(i,r)\n",
+    "        \n",
+    "\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "range(5) = range(0, 5)\n",
+      "0\n",
+      "1\n",
+      "2\n",
+      "3\n",
+      "4\n"
+     ]
+    }
+   ],
+   "source": [
+    "#help(range)\n",
+    "print('range(5) = %s' % range(5))\n",
+    "for x in range(5):\n",
+    "    print(x)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Counters should be the last choice for browsing indexed objects\n",
+    "\n",
+    "Use it only if you really need numbers themselves and not the elements"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "If numbering is really needed, we typically need values along with the given index. In this case, use `enumerate`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0. egg\n",
+      "1. bacon\n",
+      "2. sausage\n",
+      "3. spam\n"
+     ]
+    }
+   ],
+   "source": [
+    "for i, x in enumerate(('egg', 'bacon', 'sausage', 'spam')):\n",
+    "    print('{}. {}'.format(i, x))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Useful functions and methods\n",
+    "\n",
+    "## `zip`\n",
+    "`zip` is used to iterate over several iterables simultaneously. It pairs elements of n objects into n-tuples so that we don't need indexing.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2^1 = 2\n",
+      "2^2 = 4\n",
+      "2^3 = 8\n",
+      "2^4 = 16\n",
+      "2^5 = 32\n",
+      "2^6 = 64\n",
+      "2^7 = 128\n",
+      "2^8 = 256\n"
+     ]
+    }
+   ],
+   "source": [
+    "# let's create some generators\n",
+    "l1 = range(1,9)\n",
+    "l2 = (2 ** n for n in l1)\n",
+    "# and interate over them simultaneously\n",
+    "for x, y in zip(l1, l2):\n",
+    "    print(\"2^%i = %i\" % (x, y))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## `enumerate`\n",
+    "In case you need to know the numeric index of the element, it is better to use `enumerate`, which gradually returns (index, element) tuples."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "for i, n in enumerate(range(1,10)):\n",
+    "    print(\"index = %i, value = %i\" % (i, n))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## `dict.items`\n",
+    "Some classes implement helper methods for iteration. Eg. `dict.items` returns (key, value) pairs."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "48 -> 0\n",
+      "49 -> 1\n",
+      "40 -> (\n",
+      "41 -> )\n",
+      "42 -> *\n",
+      "43 -> +\n",
+      "44 -> ,\n",
+      "45 -> -\n",
+      "46 -> .\n",
+      "47 -> /\n"
+     ]
+    }
+   ],
+   "source": [
+    "# part of the ascii table\n",
+    "d = {i: chr(i) for i in range(40, 50)}\n",
+    "for k, v in d.items():\n",
+    "    print(\"{0} -> {1}\".format(k, v))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Why does the default dictionary iterator in Python iterate through dictionary keys instead of (key, value) tuples?"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "https://www.quora.com/Why-does-the-default-dictionary-iterator-in-Python-iterate-through-dictionary-keys-instead-of-key-value-tuples"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "I (Guido) find the correspondence between \"for x in dict\" and \"if x in dict\" too compelling to break"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## `itertools` module\n",
+    "This module contains many interesting and useful features for creating iterators, often inpired by functional languages."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['accumulate',\n",
+       " 'chain',\n",
+       " 'combinations',\n",
+       " 'combinations_with_replacement',\n",
+       " 'compress',\n",
+       " 'count',\n",
+       " 'cycle',\n",
+       " 'dropwhile',\n",
+       " 'filterfalse',\n",
+       " 'groupby',\n",
+       " 'islice',\n",
+       " 'permutations',\n",
+       " 'product',\n",
+       " 'repeat',\n",
+       " 'starmap',\n",
+       " 'takewhile',\n",
+       " 'tee',\n",
+       " 'zip_longest']"
+      ]
+     },
+     "execution_count": 62,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# list itertools functions\n",
+    "import itertools\n",
+    "sorted([f for f in dir(itertools) if not f.startswith(\"_\")])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Cartesian products (itertools.product)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(1, 4)\n",
+      "(1, 5)\n",
+      "(2, 4)\n",
+      "(2, 5)\n",
+      "(3, 4)\n",
+      "(3, 5)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import itertools\n",
+    "for p in itertools.product([1, 2, 3], [4, 5]):\n",
+    "    print(p)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0000\n",
+      "0001\n",
+      "0010\n",
+      "0011\n",
+      "0100\n",
+      "0101\n",
+      "0110\n",
+      "0111\n",
+      "1000\n",
+      "1001\n",
+      "1010\n",
+      "1011\n",
+      "1100\n",
+      "1101\n",
+      "1110\n",
+      "1111\n"
+     ]
+    }
+   ],
+   "source": [
+    "for p in itertools.product([0, 1], repeat=4):\n",
+    "    print(''.join(str(x) for x in p))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Combinations and combinations with replacement (itertools.combinations and itertools.combinations_with_replacement)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "123\n",
+      "124\n",
+      "125\n",
+      "134\n",
+      "135\n",
+      "145\n",
+      "234\n",
+      "235\n",
+      "245\n",
+      "345\n"
+     ]
+    }
+   ],
+   "source": [
+    "for c in itertools.combinations([1, 2, 3, 4, 5], 3):\n",
+    "    print(''.join(str(x) for x in c))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Permutations (itertools.permutations)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1234\n",
+      "1243\n",
+      "1324\n",
+      "1342\n",
+      "1423\n",
+      "1432\n",
+      "2134\n",
+      "2143\n",
+      "2314\n",
+      "2341\n",
+      "2413\n",
+      "2431\n",
+      "3124\n",
+      "3142\n",
+      "3214\n",
+      "3241\n",
+      "3412\n",
+      "3421\n",
+      "4123\n",
+      "4132\n",
+      "4213\n",
+      "4231\n",
+      "4312\n",
+      "4321\n"
+     ]
+    }
+   ],
+   "source": [
+    "for p in itertools.permutations([1, 2, 3, 4]):\n",
+    "    print(''.join(str(x) for x in p))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Chaining iterables (itertools.chain)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(1, 2)\n",
+      "(1, 3)\n",
+      "(1, 4)\n",
+      "(2, 3)\n",
+      "(2, 4)\n",
+      "(3, 4)\n",
+      "(1, 2, 3)\n",
+      "(1, 2, 4)\n",
+      "(1, 3, 4)\n",
+      "(2, 3, 4)\n"
+     ]
+    }
+   ],
+   "source": [
+    "a = [1, 2, 3, 4]\n",
+    "for p in itertools.chain(itertools.combinations(a, 2), itertools.combinations(a, 3)):\n",
+    "    print(p)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 68,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "()\n",
+      "(1,)\n",
+      "(2,)\n",
+      "(3,)\n",
+      "(4,)\n",
+      "(1, 2)\n",
+      "(1, 3)\n",
+      "(1, 4)\n",
+      "(2, 3)\n",
+      "(2, 4)\n",
+      "(3, 4)\n",
+      "(1, 2, 3)\n",
+      "(1, 2, 4)\n",
+      "(1, 3, 4)\n",
+      "(2, 3, 4)\n",
+      "(1, 2, 3, 4)\n"
+     ]
+    }
+   ],
+   "source": [
+    "for subset in itertools.chain.from_iterable(itertools.combinations(a, n) for n in range(len(a) + 1)):\n",
+    "    print(subset)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Grouping rows by a given key (itertools.groupby)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "A bear is a animal.\n",
+      "A duck is a animal.\n",
+      "\n",
+      "A cactus is a plant.\n",
+      "\n",
+      "A speed boat is a vehicle.\n",
+      "A school bus is a vehicle.\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from itertools import groupby\n",
+    "\n",
+    "things = [(\"animal\", \"bear\"), (\"animal\", \"duck\"), (\"plant\", \"cactus\"), (\"vehicle\", \"speed boat\"), (\"vehicle\", \"school bus\")]\n",
+    "\n",
+    "for key, group in groupby(things, lambda x: x[0]):\n",
+    "    for thing in group:\n",
+    "        print(\"A %s is a %s.\" % (thing[1], key))\n",
+    "    print()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "# Generator Expressions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "An even simpler syntax exists for creating generators: a \"generator expression\"."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 70,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "evens = (i*2 for i in range(5))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "generator"
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(evens)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Passing this into the ``list`` function is equivalent to a list comprehension:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 72,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 72,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# These are equivalent:\n",
+    "list(evens) == [i*2 for i in range(5)]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "But the generator expression is a more general construct. It has the advantage that it is \"lazy\"\n",
+    "\n",
+    "The values need not be generated in memory all at once"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "![gen_iter_relationships.png](gen_iter_relationships.png)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "JmĂŠno a pĹĂ­jmenĂ­:\n",
+      "Jan Vlk\n",
+      "Petr Marek\n"
+     ]
+    }
+   ],
+   "source": [
+    "f = open('students.txt')\n",
+    "all_students = set()\n",
+    "for line in f:\n",
+    "    line = line.rstrip()\n",
+    "    all_students.add(line)\n",
+    "    print(line)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<built-in method rstrip of str object at 0x0000017F0045B960>\n",
+      "<built-in method rstrip of str object at 0x0000017F001738F0>\n",
+      "<built-in method rstrip of str object at 0x0000017F003C93B0>\n"
+     ]
+    }
+   ],
+   "source": [
+    "# minitask 7.1\n",
+    "# f is a general iterator, for example a file\n",
+    "f = open('students.txt')\n",
+    "it = f\n",
+    "header = f\n",
+    "for line in it:\n",
+    "    line = line.rstrip\n",
+    "    print(line)\n",
+    "    \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "## How to be more effective with functions\n",
+    "\n",
+    "http://www.informit.com/articles/article.aspx?p=2314818\n",
+    "\n",
+    "http://dailytechvideo.com/video-227-brett-slatkin-how-to-be-more-effective-with-functions/"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from pprint import pprint\n",
+    "\n",
+    "def load_cities_list(path):\n",
+    "    result = []\n",
+    "    with open(path) as handle:\n",
+    "        for line in handle:\n",
+    "            city, count = line.split('\\t')\n",
+    "            result.append((city, int(count)))\n",
+    "    return result\n",
+    "\n",
+    "\n",
+    "result = load_cities_list('population.tsv')\n",
+    "pprint(result)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 113,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Laval', 11.007915058073822)\n",
+      "('Gatineau', 7.274106413710845)\n"
+     ]
+    }
+   ],
+   "source": [
+    "def normalize(population):\n",
+    "    total = sum(x for _, x in population)\n",
+    "    for city, count in population:\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "data = load_cities_list('population.tsv')\n",
+    "result = normalize(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-114-c0ce0d43e2b5>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      7\u001b[0m \u001b[0mdata\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mload_cities_generator\u001b[0m\u001b[1;33m(\u001b[0m\u001b[1;34m'population.tsv'\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[1;32m      8\u001b[0m \u001b[0mresult\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mnormalize\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mdata\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0;32m----> 9\u001b[0;31m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     10\u001b[0m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "def normalize(population):\n",
+    "    total = sum(x for _, x in population)\n",
+    "    for city, count in population:\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 115,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "ERROR:root:Expected\n",
+      "Traceback (most recent call last):\n",
+      "  File \"<ipython-input-115-bfd2cbcbf530>\", line 7, in <module>\n",
+      "    print(next(result))\n",
+      "StopIteration\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[]\n"
+     ]
+    }
+   ],
+   "source": [
+    "import logging\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize(data)\n",
+    "\n",
+    "try:\n",
+    "    print(next(result))\n",
+    "    assert False\n",
+    "except StopIteration:\n",
+    "    logging.exception('Expected')\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize(data)\n",
+    "print(list(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-116-c0ce0d43e2b5>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      7\u001b[0m \u001b[0mdata\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mload_cities_generator\u001b[0m\u001b[1;33m(\u001b[0m\u001b[1;34m'population.tsv'\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[1;32m      8\u001b[0m \u001b[0mresult\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mnormalize\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mdata\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0;32m----> 9\u001b[0;31m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     10\u001b[0m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "def normalize(population):\n",
+    "    total = sum(x for _, x in population)\n",
+    "    for city, count in population:\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "The cause of this behavior is that an iterator only produces its results a single time\n",
+    "\n",
+    "If you iterate over an iterator or generator that has already raised a StopIteration exception, you wonât get any results the second time around"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Whatâs confusing is that you also wonât get any errors when you iterate over an already-exhausted iterator\n",
+    "\n",
+    "for loops, the list constructor, and many other functions throughout the Python standard library expect the StopIteration exception to be raised during normal operation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "These functions canât tell the difference between an iterator that has no output and an iterator that had output and is now exhausted"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 117,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "StopIteration",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mStopIteration\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-117-e616c1ddc633>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mdata\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mload_cities_list\u001b[0m\u001b[1;33m(\u001b[0m\u001b[1;34m'empty.tsv'\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0mresult\u001b[0m \u001b[1;33m=\u001b[0m \u001b[0mnormalize\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mdata\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      4\u001b[0m \u001b[0mprint\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mStopIteration\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "data = load_cities_list('empty.tsv')\n",
+    "result = normalize(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 118,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "ERROR:root:Expected\n",
+      "Traceback (most recent call last):\n",
+      "  File \"<ipython-input-118-9bf26f17d9fa>\", line 7, in <module>\n",
+      "    print(next(result))\n",
+      "StopIteration\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[]\n"
+     ]
+    }
+   ],
+   "source": [
+    "import logging\n",
+    "\n",
+    "data = load_cities_list('empty.tsv')\n",
+    "result = normalize(data)\n",
+    "\n",
+    "try:\n",
+    "    print(next(result))\n",
+    "    assert False\n",
+    "except StopIteration:\n",
+    "    logging.exception('Expected')\n",
+    "\n",
+    "data = load_cities_generator('empty.tsv')\n",
+    "result = normalize(data)\n",
+    "print(list(result))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "To solve this problem, you can explicitly exhaust an input iterator and keep a copy of its entire contents in a list. You can then iterate over the list version of the data as many times as you need to. Hereâs the same function as before, but it defensively copies the input iterator."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 119,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Laval', 11.007915058073822)\n",
+      "('Gatineau', 7.274106413710845)\n"
+     ]
+    }
+   ],
+   "source": [
+    "def normalize_copy(population):\n",
+    "    population_list = list(population)\n",
+    "    total = sum(x for _, x in population_list)\n",
+    "    for city, count in population_list:\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize_copy(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<list_iterator object at 0x0000017BC0917F60>\n",
+      "<list_iterator object at 0x0000017BC0917F60>\n",
+      "True\n"
+     ]
+    }
+   ],
+   "source": [
+    "a = [1,2,3]\n",
+    "b = iter(a)\n",
+    "c = iter(b)\n",
+    "print(b)\n",
+    "print(c)\n",
+    "print(b is c)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 121,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<list_iterator object at 0x0000017BC0917F28>\n",
+      "<list_iterator object at 0x0000017BC0917FD0>\n",
+      "False\n"
+     ]
+    }
+   ],
+   "source": [
+    "a = [1,2,3]\n",
+    "b = iter(a)\n",
+    "c = iter(a)\n",
+    "print(b)\n",
+    "print(c)\n",
+    "print(b is c)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 122,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Laval', 11.007915058073822)\n",
+      "('Gatineau', 7.274106413710845)\n"
+     ]
+    }
+   ],
+   "source": [
+    "class LoadCities(object):\n",
+    "\n",
+    "    def __init__(self, path):\n",
+    "        self.path = path\n",
+    "\n",
+    "    def __iter__(self):\n",
+    "        with open(self.path) as handle:\n",
+    "            for line in handle:\n",
+    "                city, count = line.split('\\t')\n",
+    "                yield city, int(count)\n",
+    "\n",
+    "\n",
+    "data = LoadCities('population.tsv')\n",
+    "result = normalize(data)\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 123,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Explicit\n",
+      "('Laval', 11.007915058073822)\n",
+      "('Gatineau', 7.274106413710845)\n"
+     ]
+    }
+   ],
+   "source": [
+    "def normalize_explicit(population):\n",
+    "    total = sum(x for _, x in iter(population))\n",
+    "    for city, count in iter(population):\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "data = LoadCities('population.tsv')\n",
+    "result = normalize_explicit(data)\n",
+    "print('Explicit')\n",
+    "print(next(result))\n",
+    "print(next(result))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def normalize_defensive(population):\n",
+    "    if iter(population) is iter(population):\n",
+    "        raise TypeError('Must be a container')\n",
+    "\n",
+    "    total = sum(x for _, x in population)\n",
+    "    for city, count in population:\n",
+    "        percent = 100 * count / total\n",
+    "        yield city, percent\n",
+    "\n",
+    "\n",
+    "data = load_cities_generator('population.tsv')\n",
+    "result = normalize_defensive(data)\n",
+    "print(list(result))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Useful functions and methods\n",
+    "\n",
+    "## `zip`\n",
+    "`zip` is used to iterate over several iterables simultaneously. It pairs elements of n objects into n-tuples so that we don't need indexing.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# let's create some generators\n",
+    "l1 = range(1,9)\n",
+    "l2 = (2 ** n for n in l1)\n",
+    "# and interate over them simultaneously\n",
+    "for x, y in zip(l1, l2):\n",
+    "    print(\"2^%i = %i\" % (x, y))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "    list(zip(*[iter('abcde')]*2)])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 124,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[('a', 'b'), ('c', 'd')]"
+      ]
+     },
+     "execution_count": 124,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "list(zip(*[iter('abcde')]*2))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 125,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'list' object is not an iterator",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-125-34beec479340>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mli\u001b[0m \u001b[1;33m=\u001b[0m \u001b[1;33m[\u001b[0m\u001b[1;36m1\u001b[0m\u001b[1;33m,\u001b[0m\u001b[1;36m2\u001b[0m\u001b[1;33m,\u001b[0m\u001b[1;36m3\u001b[0m\u001b[1;33m]\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mnext\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mli\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: 'list' object is not an iterator"
+     ]
+    }
+   ],
+   "source": [
+    "li = [1,2,3]\n",
+    "next(li)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 126,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1"
+      ]
+     },
+     "execution_count": 126,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "li = iter([1,2,3])\n",
+    "next(li)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 128,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "3"
+      ]
+     },
+     "execution_count": 128,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "next(li)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 129,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<list_iterator at 0x17bc0903c88>"
+      ]
+     },
+     "execution_count": 129,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "iter([1,2,3])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 130,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<list_iterator at 0x17bc0903ba8>, <list_iterator at 0x17bc0903ba8>]"
+      ]
+     },
+     "execution_count": 130,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "[iter([1,2,3])]*2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 131,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<str_iterator object at 0x0000017BC09035C0>\n",
+      "<str_iterator object at 0x0000017BC09035C0>\n"
+     ]
+    }
+   ],
+   "source": [
+    "for obj in [iter('abc')]*2:\n",
+    "    print(obj)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 132,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "can't use starred expression here (<ipython-input-132-8c2347a2b213>, line 1)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"<ipython-input-132-8c2347a2b213>\"\u001b[0;36m, line \u001b[0;32m1\u001b[0m\n\u001b[0;31m    *[iter('abc')]*3\u001b[0m\n\u001b[0m                    ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m can't use starred expression here\n"
+     ]
+    }
+   ],
+   "source": [
+    "*[iter('abc')]*3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 133,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "a\n",
+      "b\n",
+      "c\n"
+     ]
+    }
+   ],
+   "source": [
+    "def popper(*args):\n",
+    "    for e in args:\n",
+    "        print(next(e))\n",
+    "\n",
+    "popper(*[iter('abc')]*3)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 134,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[(1, 2, 3), (4, 5, 6)]"
+      ]
+     },
+     "execution_count": 134,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s = [1,2,3,4,5,6,7,8]\n",
+    "chunk_size = 3\n",
+    "list(zip(*[iter(s)]*chunk_size))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 135,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('A', 'B', 'C')\n",
+      "('D', 'E', 'F')\n",
+      "('G', 'x', 'x')\n"
+     ]
+    }
+   ],
+   "source": [
+    "from itertools import zip_longest\n",
+    "def grouper(group_size, iterable, fillvalue=None):\n",
+    "    args = [iter(iterable)] * group_size\n",
+    "    return zip_longest(fillvalue=fillvalue, *args)\n",
+    "for item in grouper(3, 'ABCDEFG', 'x'):\n",
+    "    print(item)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## `enumerate`\n",
+    "In case you need to know the numeric index of the element, it is better to use `enumerate`, which gradually returns (index, element) tuples."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "for i, n in enumerate(range(1,10)):\n",
+    "    print(\"index = %i, value = %i\" % (i, n))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "There are lots of built-in methods that provide actions on lists as a whole:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "any([True, False, True])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "all([True, False, True])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "max([1, 2, 3])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sum([1, 2, 3])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Functional Concepts"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "If Guido van Rossum, the author of the programming language Python, had got his will, this part would be missing in the lecture"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "In his article from May 2005 \"All Things Pythonic: The fate of reduce() in Python 3000\" - http://www.artima.com/weblogs/viewpost.jsp?thread=98196, he gives his reasons for dropping lambda, map(), filter() and reduce()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "He expected resistance from the Lisp and the Scheme \"folks\"\n",
+    "\n",
+    "What he didn't anticipate was the rigidity of this opposition"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "He wrote hardly a year later: \"After so many attempts to come up with an alternative for lambda, perhaps we should admit defeat. I've not had the time to follow the most recent rounds, but I propose that we keep lambda, so as to stop wasting everybody's talent and time on an impossible quest.\"\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "We can see the result: lambda, map() and filter() are still part of core Python. Only reduce() had to go; it moved into the module functools."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "His reasoning for dropping them is like this:\n",
+    "\n",
+    "* There is an equally powerful alternative to lambda, filter, map and reduce, i.e. list comprehension\n",
+    "* List comprehension is more evident and easier to understand\n",
+    "* Having both list comprehension and \"Filter, map, reduce and lambda\" is transgressing the Python motto \"There should be one obvious way to solve a problem\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Some like it, others hate it and many are afraid of the lambda operator"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "The lambda operator or lambda function is a way to create small anonymous functions, i.e. functions without a name"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "These functions are throw-away functions, i.e. they are just needed where they have been created"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "It is used primarily to write very short functions that are a hassle to define in the normal way\n",
+    "\n",
+    "A function like this:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def sum_squares(a, b):\n",
+    "    return a**2 + b**2\n",
+    "\n",
+    "sum_squares(2, 3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "print((lambda a, b: a**2 + b**2)(2, 3))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "Lambda is often used as an argument to other functions that expects a function object, such as sorted()'s 'key' argument"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sorted([[3, 4], [3, 5], [1, 2], [7, 3]], key=lambda x: x[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "ice_cream = defaultdict(lambda: 'Vanilla')\n",
+    "ice_cream['Sarah'] = 'Chunky Monkey'\n",
+    "print(ice_cream['Sarah'])\n",
+    "print(ice_cream['Joe'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "numbp = defaultdict(lambda: 0)\n",
+    "numbp['Adam'] = 42\n",
+    "print(numbp['Adam'])\n",
+    "print(numbp['Eva'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "numbp = defaultdict(int)\n",
+    "numbp['Adam'] = 42\n",
+    "print(numbp['Adam'])\n",
+    "print(numbp['Eva'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "The lambda form is often useful as a closure, such as illustrated in the following example:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def attribution(name):\n",
+    "    return lambda x: x + ' -- ' + name\n",
+    "\n",
+    "pp = attribution('John')\n",
+    "pp('Dinner is in the fridge')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "The general syntax of a lambda function is quite simple:\n",
+    "\n",
+    "    lambda argument_list: expression"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "The argument list consists of a comma separated list of arguments and the expression is an arithmetic expression using these arguments\n",
+    "\n",
+    "You can assign the function to a variable to give it a name."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "\n",
+    "    map(function, iterable, ...)\n",
+    "\n",
+    "Return an iterator that applies function to every item of iterable, yielding the results\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "If additional iterable arguments are passed, function must take that many arguments and is applied to the items from all iterables in parallel\n",
+    "\n",
+    "With multiple iterables, the iterator stops when the shortest iterable is exhausted"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "map is syntactic sugar for a simple list comprehension that applies one function to every member of a list:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "[str(x) for x in range(10)]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "map(str, range(10))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "So I can write:\n",
+    "    \n",
+    "    analysed_data = map(analyse, data)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "![8-queens](8-queens.jpg)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from itertools import permutations\n",
+    "\n",
+    "n = width_of_chessboard = 8\n",
+    "sqs = list(range(n))\n",
+    "\n",
+    "Qs = (Q for Q in permutations(sqs)\n",
+    "      if n == len({Q[i]+i for i in sqs})\n",
+    "           == len({Q[i]-i for i in sqs}))\n",
+    "for q in Qs:\n",
+    "    print(q)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sqs = list(range(8))\n",
+    "sqs\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "![8-rooks](8-rooks.gif)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from itertools import permutations\n",
+    "rooks = permutations(sqs)\n",
+    "next(rooks)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "next(rooks)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "next(rooks)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "list(rooks)[34567]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "next(rooks)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "rooks = permutations(sqs)\n",
+    "list(rooks)[40319]\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import math\n",
+    "math.factorial(8)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "diagonal = list(range(8))\n",
+    "{r-c for c,r in enumerate(diagonal)}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "{r+c for c,r in enumerate(diagonal)}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "other_diagonal = list(reversed(diagonal))\n",
+    "{r-c for c,r in enumerate(other_diagonal)}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "diagonal = list(range(8))\n",
+    "{diagonal[i]-i for i in diagonal}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "{diagonal[i]+i for i in diagonal}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from itertools import permutations\n",
+    "\n",
+    "n = width_of_chessboard = 8\n",
+    "sqs = list(range(n))\n",
+    "\n",
+    "Qs = (Q for Q in permutations(sqs)\n",
+    "      if n == len({Q[i]+i for i in sqs}) == len({Q[i]-i for i in sqs}))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Copying"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = [1, 2, 3, 4]\n",
+    "b = a\n",
+    "b is a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "b = a[:]\n",
+    "b is a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "d = dict(a=1,b=2)\n",
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "c = d\n",
+    "c is d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "c = d.copy()\n",
+    "c\n",
+    "c is d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import copy\n",
+    "class A:\n",
+    "    def __init__(self, hodnota=None):\n",
+    "        self.x = hodnota\n",
+    "    def __repr__(self):\n",
+    "        return('x=%s' % self.x)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = A(-99) \n",
+    "a\n",
+    "b_assign = a\n",
+    "b_shallow = copy.copy(a)\n",
+    "b_deep = copy.deepcopy(a)\n",
+    "a.x = 9 \t\t\t\t\n",
+    "print('a.x=%s, b_assign.x=%s, b_shallow.x=%s, b_deep.x=%s' % (a.x, b_assign.x, b_shallow.x, b_deep.x))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = A([-2,3]) \n",
+    "a\n",
+    "b_assign = a\n",
+    "b_shallow = copy.copy(a)\n",
+    "b_deep = copy.deepcopy(a)\n",
+    "a.x[0] =  8\n",
+    "print('a.x=%s, b_assign.x=%s, b_shallow.x=%s, b_deep.x=%s' % (a.x, b_assign.x, b_shallow.x, b_deep.x))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = [4,3,5,['pokus',2], A(-9)]\n",
+    "a\n",
+    "b_assign = a\n",
+    "b_shallow = copy.copy(a)\n",
+    "b_deep = copy.deepcopy(a)\n",
+    "a[3] = 999; a[4].x = -6\n",
+    "print('a=%s, b_assign.x=%s, b_shallow.x=%s, b_deep.x=%s' % (a, b_assign, b_shallow, b_deep))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = [4,3,5,['pokus',2], A(-9)]\n",
+    "a\n",
+    "b_assign = a\n",
+    "b_shallow = copy.copy(a)\n",
+    "b_deep = copy.deepcopy(a)\n",
+    "a[3] = 999; a[4].x = -6\n",
+    "b_slice = a[0:5]\n",
+    "print('a=%s, b_assign.x=%s, b_shallow.x=%s, b_deep.x=%s, b_slice=%s' % (a, b_assign, b_shallow, b_deep, b_slice))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "# Trees in Python"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "class Tree:\n",
+    "    def __init__(self, cargo, left=None, right=None):\n",
+    "        self.cargo = cargo\n",
+    "        self.left = left\n",
+    "        self.right = right\n",
+    "    def __str__(self):\n",
+    "        return str(self.cargo)\n",
+    "    \n",
+    "left = Tree(2)\n",
+    "right = Tree(3)\n",
+    "tree1 = Tree(1, left, right)\n",
+    "tree2 = Tree(1, Tree(2), Tree(3))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "### Traversing trees"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def total(tree):\n",
+    "    if tree == None: return 0\n",
+    "    return total(tree.left) + total(tree.right) + tree.cargo\n",
+    "\n",
+    "tree = Tree('+', Tree(1), Tree('*', Tree(2), Tree(3)))\n",
+    "\n",
+    "def print_tree(tree):\n",
+    "    if tree == None: return\n",
+    "    print(tree.cargo, print_tree(tree.left), print_tree(tree.right))\n",
+    "\n",
+    "print_tree(tree)\t# + 1 * 2 3\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def print_tree_postorder(tree):\n",
+    "    if tree == None: return\n",
+    "    print_tree_postorder(tree.left)\n",
+    "    print_tree_postorder(tree.right)\n",
+    "    print(tree.cargo)\n",
+    "        \n",
+    "print_tree_postorder(tree)\n",
+    "\n",
+    "def print_tree_indented(tree, level=0):\n",
+    "    if tree == None: return\n",
+    "    print_tree_indented(tree.right, level+1)\n",
+    "    print('  ' * level + str(tree.cargo))\n",
+    "    print_tree_indented(tree.left, level+1)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "class TreeNode(list):\n",
+    "    def __init__(self, iterable=(), **attributes):\n",
+    "        self.attr = attributes\n",
+    "        list.__init__(self, iterable)\n",
+    "        \n",
+    "    def __repr__(self):\n",
+    "        return '%s(%s, %r)' % (type(self).__name__,list.__repr__(self), self.attr)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "### Autovivification \n",
+    "\n",
+    "automatic creation of a reference to a name when referencing undefined value"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "def tree(): return defaultdict(tree)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# a tree as a dictionary\n",
+    "t1 = {40 : {30:{}, 50:{}}}\n",
+    "t2 = {40: {30:{20:{}}, 50:{60:{}, 70:{}}}}\n",
+    "t2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# functions are first-class citizens\n",
+    "def sqr(x):\n",
+    "    return x*x\n",
+    "def cube(x):\n",
+    "    return x*x*x\n",
+    "a = {'hello':sqr, 'world':cube}\n",
+    "m = a['hello'](5)\n",
+    "n = a['world'](10)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# defaultdict\n",
+    "from collections import defaultdict\n",
+    "a = defaultdict()\n",
+    "a['hello'] = 1\n",
+    "a['hello']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a['world']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def always_one():\n",
+    "    return 1\n",
+    "\n",
+    "a = defaultdict(always_one)\n",
+    "a['hello'] = 10\n",
+    "a['world']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from collections import defaultdict\n",
+    "def tree(): return defaultdict(tree)\n",
+    "\n",
+    "a = tree()\n",
+    "# an instance of defaultdict, which has\n",
+    "# function tree() as the constructor of\n",
+    "# its value for non-existent keys\n",
+    "# (similarly to aways_one)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a[50]\n",
+    "# key 50 is added to the dictionary, another\n",
+    "# instance of the defaultdict as its value"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a[50][40]\n",
+    "# a[50] is an instance defaultdict\n",
+    "# a[50][40] indexes this instance using key 40\n",
+    "# which does not exist\n",
+    "# the key is added to this instance\n",
+    "# and its value is set to the value returned\n",
+    "# when calling tree() - yet another instance\n",
+    "# of default dict"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a[50][60]\n",
+    "a[50][70]\n",
+    "a[50][40][20]\n",
+    "a[50][40][25]\n",
+    "a[50][40][25][23]\n",
+    "a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "users = tree()\n",
+    "users['harold']['username'] = 'hrldcpr'\n",
+    "users['handler']['username'] = 'matthandlersux'\n",
+    "\n",
+    "import json\n",
+    "print(json.dumps(users))\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "taxonomy = tree()\n",
+    "taxonomy['Animalia']['Chordata']['Mammalia']['Carnivora']['Felidae']['Felis']['cat']\n",
+    "taxonomy['Animalia']['Chordata']['Mammalia']['Carnivora']['Felidae']['Panthera']['lion']\n",
+    "taxonomy['Animalia']['Chordata']['Mammalia']['Carnivora']['Canidae']['Canis']['dog']\n",
+    "taxonomy['Animalia']['Chordata']['Mammalia']['Carnivora']['Canidae']['Canis']['coyote']\n",
+    "taxonomy['Plantae']['Solanales']['Solanaceae']['Solanum']['tomato']\n",
+    "taxonomy['Plantae']['Solanales']['Solanaceae']['Solanum']['potato']\n",
+    "taxonomy['Plantae']['Solanales']['Convolvulaceae']['Ipomoea']['sweet potato']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def dicts(t): return {k: dicts(t[k]) for k in t}\n",
+    "import pprint\n",
+    "pprint.pprint(dicts(taxonomy))\n",
+    " "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def add(t, keys):\n",
+    "    for key in keys:\n",
+    "        t = t[key]\n",
+    "\n",
+    "add(taxonomy, \n",
+    "        'Animalia,Chordata,Mammalia,Cetacea,Balaenopteridae,Balaenoptera,blue whale'.split(','))\n",
+    "\n",
+    "pprint.pprint(dicts(taxonomy))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "## Misc"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "### Finding Monday from a Date\n",
+    "\n",
+    "If you have a date and want to normalize(say to previous or next Monday), you could do the following:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import datetime\n",
+    "some_date = datetime.date.today()\n",
+    "previous_monday = some_date - datetime.timedelta(days=some_date.weekday())\n",
+    "print(previous_monday)\n",
+    "next_monday = some_date + datetime.timedelta(days=-some_date.weekday(), weeks=1)\n",
+    "print(next_monday)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "## Strip various html tags"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from html.parser import HTMLParser\n",
+    "\n",
+    "class HTMLStrip(HTMLParser):\n",
+    "\n",
+    "\n",
+    "    def __init__(self):\n",
+    "        self.reset()\n",
+    "        self.ls = []\n",
+    "\n",
+    "    def handle_data(self, d):\n",
+    "        self.ls.append(d)\n",
+    "\n",
+    "    def get_data(self):\n",
+    "        return ''.join(self.ls)\n",
+    "\n",
+    "    @staticmethod\n",
+    "    def strip(snippet):\n",
+    "        html_strip = HTMLStrip()\n",
+    "        html_strip.feed(snippet)\n",
+    "        clean_text = html_strip.get_data()\n",
+    "        return clean_text\n",
+    "\n",
+    "snippet = HTMLStrip.strip(html_snippet)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "source": [
+    "\n",
+    "## Escape HTML"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import html\n",
+    "escaped_snippet = html.escape(html_snippet)\n",
+    "html_snippet = html.unescape(escaped_snippet)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "si = 'hello',"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "print(si)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "empty = ()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "print(empty)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = set('abracadabra')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "b = set('alacazam')\n",
+    "b"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a ^ b"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a = {x for x in 'abracadabra' if x not in 'abc'}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "a"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "slideshow": {
+     "slide_type": "slide"
+    }
+   },
+   "source": [
+    "## yield from"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def accumulate():\n",
+    "    tally = 0\n",
+    "    while 1:\n",
+    "        next = yield\n",
+    "        if next is None:\n",
+    "            return tally\n",
+    "        tally += next\n",
+    "\n",
+    "def gather_tallies(tallies):\n",
+    "    while True:\n",
+    "        tally = yield from accumulate()\n",
+    "        tallies.append(tally)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "tallies = []\n",
+    "acc = gather_tallies(tallies)\n",
+    "next(acc) # Ensure the accumulator is ready to accept values\n",
+    "for i in range(4):\n",
+    "    acc.send(i)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "fragment"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "for i in range(5):\n",
+    "    acc.send(i)\n",
+    "    \n",
+    "acc.send(None) # Finish the second tally\n",
+    "tallies"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "for i, v in enumerate(['tic', 'tac', 'toe']):\n",
+    "    print(i, v)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "slideshow": {
+     "slide_type": "subslide"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from time import sleep\n",
+    "from tqdm import tqdm\n",
+    "for i in tqdm(range(1000)):\n",
+    "    sleep(0.01)"
+   ]
+  }
+ ],
+ "metadata": {
+  "anaconda-cloud": {},
+  "celltoolbar": "Slideshow",
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.8"
+  },
+  "livereveal": {
+   "controls": true,
+   "height": 855,
+   "history": true,
+   "minScale": 1,
+   "progress": true,
+   "scroll": false,
+   "slideNumber": true,
+   "start_slideshow_at": "selected",
+   "theme": "simple",
+   "transition": "linear",
+   "width": 1140
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
